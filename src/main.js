@@ -1,8 +1,15 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from "vue/dist/vue.js";
+import App from "./App";
+import router from "./router";
+import Axios from "axios";
 
-Vue.config.productionTip = false
+Vue.prototype.$http = Axios;
+
+Vue.config.productionTip = false;
 
 new Vue({
-  render: h => h(App),
-}).$mount('#app')
+  el: "#app",
+  router,
+  components: { App },
+  template: "<App/>"
+});
