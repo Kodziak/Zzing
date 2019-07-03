@@ -46,7 +46,8 @@ export default {
     handleSubmit(e) {
       e.preventDefault();
 
-      if (this.password > 1) {
+      if (this.password > 1 && this.password === this.password_confirmation) {
+        // TODO: Implement regex matcher.
         axios
           .post("http://localhost:3000/register", {
             username: this.name,
@@ -55,11 +56,27 @@ export default {
             firstname: "test_site"
           })
           .then(function(response) {
-            console.log(response);
+            localStorage.setItem("username", JSON.stringify(response.data.username));
+            localStorage.setItem("jwt", response.data.token);
+
+            console.log(response.data.username, response.data.token);
+
+            if (localStorage.getItem("jwt") != null) {
+              this.$emit("loggedIn");
+              if (this.$route.params.nextUrl != null) {
+                this.$router.push(this.$route.params.nextUrl);
+              } else {
+                this.$router.push("/");
+              }
+            }
           })
           .catch(function(error) {
             console.log(error);
           });
+      } else {
+        this.password = "";
+        this.passwordConfirm = "";
+        return alert("Passwords do not match");
       }
     }
   }
