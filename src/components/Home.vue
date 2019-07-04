@@ -14,6 +14,30 @@ export default {
       msg: "Homepage!"
     };
   },
+  mounted() {
+    let token = localStorage.getItem("jwt");
+    if (token) {
+      this.$http
+        .get("http://localhost:3000/profile", {
+          headers: {
+            Authorization: token
+          }
+        })
+        .then(response => {
+          if (localStorage.getItem("jwt") != null && response.data.username && response.data.email) {
+            this.$emit("loggedIn");
+            if (this.$route.params.nextUrl != null) {
+              this.$router.push(this.$route.params.nextUrl);
+            } else {
+              this.$router.push("dashboard");
+            }
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  },
   methods: {
     handleSubmit(e) {
       e.preventDefault();

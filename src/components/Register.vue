@@ -52,7 +52,6 @@ export default {
       } else {
         if (this.password > 1 && this.password === this.password_confirmation) {
           // TODO: Implement regex matcher.
-
           this.$http
             .post("http://localhost:3000/register", {
               username: this.name,
