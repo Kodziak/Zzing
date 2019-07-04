@@ -23,6 +23,7 @@
       </div>
 
       <div>
+        <button id="back" type="submit" @click="handleSubmit">Back</button>
         <button type="submit" @click="handleSubmit">Register</button>
       </div>
     </form>
@@ -46,37 +47,42 @@ export default {
     handleSubmit(e) {
       e.preventDefault();
 
-      if (this.password > 1 && this.password === this.password_confirmation) {
-        // TODO: Implement regex matcher.
-        axios
-          .post("http://localhost:3000/register", {
-            username: this.name,
-            email: this.email,
-            password: this.password,
-            firstname: "test_site"
-          })
-          .then(function(response) {
-            localStorage.setItem("username", JSON.stringify(response.data.username));
-            localStorage.setItem("jwt", response.data.token);
-
-            console.log(response.data.username, response.data.token);
-
-            if (localStorage.getItem("jwt") != null) {
-              this.$emit("loggedIn");
-              if (this.$route.params.nextUrl != null) {
-                this.$router.push(this.$route.params.nextUrl);
-              } else {
-                this.$router.push("/");
-              }
-            }
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
+      if (e.srcElement.id === "back") {
+        this.$router.push("/");
       } else {
-        this.password = "";
-        this.passwordConfirm = "";
-        return alert("Passwords do not match");
+        if (this.password > 1 && this.password === this.password_confirmation) {
+          // TODO: Implement regex matcher.
+
+          this.$http
+            .post("http://localhost:3000/register", {
+              username: this.name,
+              email: this.email,
+              password: this.password
+            })
+            .then(response => {
+              if (response.data.token.length > 0) {
+                localStorage.setItem("jwt", response.data.token);
+
+                if (localStorage.getItem("jwt") != null) {
+                  this.$emit("loggedIn");
+                  if (this.$route.params.nextUrl != null) {
+                    this.$router.push(this.$route.params.nextUrl);
+                  } else {
+                    this.$router.push("dashboard");
+                  }
+                }
+              } else {
+                console.log("Something went wrong.");
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        } else {
+          this.password = "";
+          this.passwordConfirm = "";
+          return alert("Passwords do not match");
+        }
       }
     }
   }

@@ -33,7 +33,7 @@ let router = new Router({
     },
     {
       path: "/dashboard",
-      name: "userboard",
+      name: "dashboard",
       component: UserBoard,
       meta: {
         requiresAuth: true
@@ -51,7 +51,7 @@ router.beforeEach((to, from, next) => {
       });
     } else {
       if (to.matched.some(record => record.meta.is_admin)) {
-        next({ name: "userboard" });
+        next({ name: "dashboard" });
       } else {
         next();
       }
@@ -60,7 +60,7 @@ router.beforeEach((to, from, next) => {
     if (localStorage.getItem("jwt") == null) {
       next();
     } else {
-      next({ name: "userboard" });
+      next({ name: "dashboard" });
     }
   } else {
     next();
