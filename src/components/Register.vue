@@ -60,6 +60,8 @@ export default {
             })
             .then(response => {
               if (response.data.token.length > 0) {
+                localStorage.setItem("username", JSON.stringify(response.data.username));
+                localStorage.setItem("email", JSON.stringify(response.data.email));
                 localStorage.setItem("jwt", response.data.token);
 
                 if (localStorage.getItem("jwt") != null) {

@@ -1,8 +1,10 @@
 <template>
   <div class="hello">
-    <h1>Welcome to regular users page</h1>
-    <h2>{{ msg }}</h2>
+    <h1>Hello, {{ capitalize(username) }}!</h1>
     <h2>Inser savings amount</h2>
+    <input id="addSavingInput" type="text" v-model="saving" />
+    <button id="addSaving-btn" type="submit" @click="addSaving">Add saving</button>
+
     <button id="logout" type="submit" @click="handleLogout">Logout</button>
   </div>
 </template>
@@ -11,7 +13,7 @@
 export default {
   data() {
     return {
-      msg: "The commoners",
+      username: "",
       saving: ""
     };
   },
@@ -24,7 +26,9 @@ export default {
         }
       })
       .then(response => {
-        this.msg = response.data.username;
+        // const name = response.data.username;
+        // const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
+        this.username = response.data.username;
       })
       .catch(error => {
         console.log(error);
@@ -35,6 +39,29 @@ export default {
       e.preventDefault();
       localStorage.removeItem("jwt");
       this.$router.push("/");
+    },
+    capitalize(name) {
+      const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
+      return nameCapitalized;
+    },
+    addSaving(e) {
+      e.preventDefault();
+
+      console.log(this.saving);
+      if (this.saving.length > 0) {
+        this.$http
+          .post("http://localhost:3000/add-saving", {
+            username: localStorage.getItem("username")
+          })
+          .then(response => {
+            console.log(localStorage.getItem("username"), response.data);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      } else {
+        console.log("Put an amount.");
+      }
     }
   }
 };
@@ -45,16 +72,5 @@ export default {
 h1,
 h2 {
   font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
 }
 </style>
