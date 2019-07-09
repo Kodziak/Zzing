@@ -1,11 +1,16 @@
 <template>
   <div class="hello">
     <h1>Hello, {{ capitalize(username) }}!</h1>
-    <h2>Inser savings amount</h2>
+    <label>Inser savings amount</label>
     <input id="addSavingInput" type="text" v-model="saving" />
-    <button id="addSaving-btn" type="submit" @click="addSaving">Add saving</button>
+    <label>Insert category</label>
+    <input id="addCategoryInput" type="text" v-model="category" />
+    <button id="addSavingBtn" type="submit" @click="addSaving">Add saving</button>
 
     <button id="logout" type="submit" @click="handleLogout">Logout</button>
+
+    <button id="getSavings" type="submit" @click="getSavings">Get savings</button>
+    <p>{{ savings }}</p>
   </div>
 </template>
 
@@ -14,7 +19,9 @@ export default {
   data() {
     return {
       username: "",
-      saving: ""
+      category: "",
+      saving: "",
+      savings: ""
     };
   },
   mounted() {
@@ -26,8 +33,6 @@ export default {
         }
       })
       .then(response => {
-        // const name = response.data.username;
-        // const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
         this.username = response.data.username;
       })
       .catch(error => {
@@ -51,10 +56,16 @@ export default {
       if (this.saving.length > 0) {
         this.$http
           .post("http://localhost:3000/add-saving", {
-            username: localStorage.getItem("username")
+            username: localStorage.getItem("username"),
+            savings: [
+              {
+                category: this.category,
+                amount: this.saving
+              }
+            ]
           })
           .then(response => {
-            console.log(localStorage.getItem("username"), response.data);
+            console.log(response.config.data, response.data);
           })
           .catch(error => {
             console.log(error);
@@ -62,6 +73,20 @@ export default {
       } else {
         console.log("Put an amount.");
       }
+    },
+    getSavings(e) {
+      e.preventDefault();
+
+      this.$http
+        .get("http://localhost:3000/get-savings", {
+          username: localStorage.getItem("username")
+        })
+        .then(response => {
+          this.savings = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 };
