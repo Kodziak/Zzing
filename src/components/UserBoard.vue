@@ -60,6 +60,12 @@ export default {
       const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
       return nameCapitalized;
     },
+    inputHandler(value) {
+      let regex = /^[0-9]{1,2}([,.][0-9]{1,2})?$/;
+      if (regex.test(value)) {
+        this.category = value;
+      }
+    },
     handleLogout(e) {
       e.preventDefault();
       localStorage.removeItem("jwt");
@@ -69,7 +75,7 @@ export default {
     },
     addSaving(e) {
       e.preventDefault();
-      if (this.saving.length > 0 && this.category.length > 0) {
+      if (this.saving.length > 0 && this.category.length > 0 && this.inputHandler(this.saving)) {
         this.$http
           .post("http://localhost:3000/add-saving", {
             username: localStorage.getItem("username"),
@@ -91,7 +97,7 @@ export default {
             console.log(error);
           });
       } else {
-        console.log("Put an amount.");
+        console.log("Put an amount or didn't fit to regex.");
       }
     },
     getSavings() {
