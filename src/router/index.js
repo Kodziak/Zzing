@@ -1,9 +1,9 @@
 import Vue from "vue/dist/vue";
 import Router from "vue-router";
-import Home from "@/components/Home";
-import Login from "@/components/Login";
-import Register from "@/components/Register";
-import UserBoard from "@/components/UserBoard";
+import Home from "@/views/Home";
+import Login from "@/views/Login";
+import Register from "@/views/Register";
+import UserBoard from "@/views/UserBoard";
 
 Vue.use(Router);
 

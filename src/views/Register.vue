@@ -1,31 +1,46 @@
 <template>
   <div>
-    <h4>Login</h4>
+    <h4>Register</h4>
     <form>
-      <label for="login">Login</label>
+      <label for="name">Username</label>
       <div>
-        <input id="login" type="login" v-model="login" required autofocus />
+        <input id="name" type="text" v-model="name" required autofocus />
       </div>
+
+      <label for="email">E-Mail</label>
       <div>
-        <label for="password">Password</label>
-        <div>
-          <input id="password" type="password" v-model="password" required />
-        </div>
+        <input id="email" type="email" v-model="email" required />
       </div>
+
+      <label for="password">Password</label>
+      <div>
+        <input id="password" type="password" v-model="password" required />
+      </div>
+
+      <label for="password-confirm">Confirm Password</label>
+      <div>
+        <input id="password-confirm" type="password" v-model="password_confirmation" required />
+      </div>
+
       <div>
         <button id="back" type="submit" @click="handleSubmit">Back</button>
-        <button type="submit" @click="handleSubmit">Login</button>
+        <button type="submit" @click="handleSubmit">Register</button>
       </div>
     </form>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
+  props: ["nextUrl"],
   data() {
     return {
-      login: "",
-      password: ""
+      name: "",
+      email: "",
+      password: "",
+      password_confirmation: ""
     };
   },
   methods: {
@@ -35,13 +50,16 @@ export default {
       if (e.srcElement.id === "back") {
         this.$router.push("/");
       } else {
-        if (this.password.length > 0 && this.login.length > 0) {
+        if (this.password > 1 && this.password === this.password_confirmation) {
+          // TODO: Implement regex matcher.
           this.$http
-            .post("http://localhost:3000/login", {
-              username: this.login,
+            .post("http://localhost:3000/register", {
+              username: this.name,
+              email: this.email,
               password: this.password
             })
             .then(response => {
+              console.log(response);
               if (response.data.token.length > 0) {
                 localStorage.setItem("username", JSON.stringify(response.data.username));
                 localStorage.setItem("email", JSON.stringify(response.data.email));
@@ -56,23 +74,19 @@ export default {
                   }
                 }
               } else {
-                console.log("Invalid login or password");
+                console.log("Token is empty - didn't logged in.");
               }
             })
-            .catch(error => {
+            .catch(function(error) {
               console.log(error);
             });
+        } else {
+          this.password = "";
+          this.passwordConfirm = "";
+          return alert("Passwords do not match");
         }
       }
     }
   }
 };
 </script>
-
-<style lang="scss">
-input {
-  width: 300px;
-  height: 40px;
-  font-size: 16px;
-}
-</style>

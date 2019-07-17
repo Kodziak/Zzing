@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import Button from "./Other/Button";
-import Dropdown from "./Other/Dropdown";
+import Button from "../components/Button";
+import Dropdown from "../components/Dropdown";
 
 export default {
   components: {
