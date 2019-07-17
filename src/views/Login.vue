@@ -22,7 +22,6 @@
 
 <script>
 import UserService from "../services/user.service";
-import { TokenService } from "../services/storage.service";
 
 export default {
   data() {
@@ -69,11 +68,19 @@ export default {
     //   }
     // },
     async handleSubmit(e) {
+      e.preventDefault();
+
       if (e.srcElement.id === "back") {
         this.$router.push("/");
       } else {
-        await UserService.login(this.login, this.password);
-        this.password = "";
+        if (this.login != "" && this.password != "") {
+          let token = await UserService.login(this.login, this.password);
+          this.password = "";
+
+          if (token != null) {
+            this.$router.push("dashboard");
+          }
+        }
       }
     }
   }

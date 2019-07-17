@@ -11,7 +11,7 @@ const ApiService = {
   },
 
   setHeader() {
-    axios.defaults.headers.commmon["Authorization"] = `${TokenService.getToken()}`;
+    axios.defaults.headers.common["Authorization"] = `${TokenService.getToken()}`;
   },
 
   removeHeader() {
@@ -19,19 +19,19 @@ const ApiService = {
   },
 
   get(endpoint) {
-    axios.get(endpoint);
+    return axios.get(endpoint);
   },
 
   post(endpoint, data) {
-    axios.post(endpoint, data);
+    return axios.post(endpoint, data);
   },
 
   put(endpoint, data) {
-    axios.put(endpoint, data);
+    return axios.put(endpoint, data);
   },
 
   delete(endpoint) {
-    axios.delete(endpoint);
+    return axios.delete(endpoint);
   },
 
   /**

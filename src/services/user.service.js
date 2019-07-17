@@ -9,16 +9,31 @@ const UserService = {
         username: login,
         password: password
       });
-      console.log(response);
+
       TokenService.saveToken(response.data.token);
       UserStorageService.saveUsername(JSON.stringify(response.data.username));
       UserStorageService.saveLocalStorage("email", JSON.stringify(response.data.email));
 
-      if ((await TokenService.getToken()) != null) {
-        this.$router.push("dashboard");
-      }
+      return response.data.token;
     } catch (error) {
-      console.log(error);
+      return error;
+    }
+  },
+
+  register: async function(login, email, password) {
+    try {
+      const response = await ApiService.post("/register", {
+        username: login,
+        email: email,
+        password: password
+      });
+
+      TokenService.saveToken(response.data.token);
+      UserStorageService.saveUsername(JSON.stringify(response.data.username));
+      UserStorageService.saveLocalStorage("email", JSON.stringify(response.data.email));
+
+      return response.data.token;
+    } catch (error) {
       return error;
     }
   }
