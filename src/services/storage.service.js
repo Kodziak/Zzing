@@ -1,5 +1,6 @@
 const TOKEN_KEY = "jwt";
 const USERNAME_KEY = "username";
+const EMAIL_KEY = "email";
 
 const TokenService = {
   getToken() {
@@ -26,6 +27,18 @@ const UserStorageService = {
 
   removeUsername() {
     localStorage.removeItem(USERNAME_KEY);
+  },
+
+  getEmail() {
+    return localStorage.getItem(EMAIL_KEY);
+  },
+
+  saveEmail(email) {
+    localStorage.setItem(EMAIL_KEY, email);
+  },
+
+  removeEmail() {
+    localStorage.removeItem(EMAIL_KEY);
   },
 
   saveLocalStorage(key, value) {

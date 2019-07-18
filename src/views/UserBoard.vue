@@ -15,6 +15,7 @@
 <script>
 import Button from "../components/Button";
 import Dropdown from "../components/Dropdown";
+import UserService from "../services/user.service";
 
 export default {
   components: {
@@ -68,36 +69,26 @@ export default {
     },
     handleLogout(e) {
       e.preventDefault();
-      localStorage.removeItem("jwt");
-      localStorage.removeItem("username");
-      localStorage.removeItem("email");
-      this.$router.push("/");
+      const logout = UserService.logout();
+      if (logout) {
+        this.$router.push("/");
+      }
     },
     addSaving(e) {
       e.preventDefault();
+
       if (this.saving.length > 0 && this.category.length > 0 && this.inputHandler(this.saving)) {
-        this.$http
-          .post("http://localhost:3000/add-saving", {
-            username: localStorage.getItem("username"),
-            savings: [
-              {
-                ID: this.getID(),
-                category: this.category,
-                amount: this.saving
-              }
-            ]
-          })
-          .then(response => {
-            this.category = "";
-            this.saving = "";
-            this.getSavings();
-            console.log(response.config.data, response.data);
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        const response = UserService.addSaving(this.username, this.getID(), this.category, this.saving);
+        if (response) {
+          this.category = "";
+          this.saving = "";
+          this.getSavings();
+          console.log(response.config.data, response.data);
+        } else {
+          console.log(response);
+        }
       } else {
-        console.log("Put an amount or didn't fit to regex.");
+        console.log("Didn't fit regex.");
       }
     },
     getSavings() {
