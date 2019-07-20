@@ -93,7 +93,7 @@ export default {
     },
     getSavings() {
       this.$http
-        .get("http://localhost:3000/get-savings", {
+        .get("http://localhost:3000/savings", {
           headers: {
             Authorization: localStorage.getItem("jwt")
           }

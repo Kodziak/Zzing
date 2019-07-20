@@ -50,7 +50,7 @@ const UserService = {
 
   addSaving: async function(username, id, category, amount) {
     try {
-      const response = await ApiService.post("/add-saving", {
+      const response = await ApiService.post("/savings/add", {
         username: username,
         savings: [
           {
@@ -65,6 +65,14 @@ const UserService = {
     } catch (error) {
       return error;
     }
+  },
+
+  getSavings: async function() {
+    //TODO: Implement to get all savings
+  },
+
+  removeSaving: async function() {
+    //TODO: Implement remove saving by ID
   }
 };
 
