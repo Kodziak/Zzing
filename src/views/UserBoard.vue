@@ -16,6 +16,8 @@
 import Button from "../components/Button";
 import Dropdown from "../components/Dropdown";
 import UserService from "../services/user.service";
+import Utils from "../utils/global";
+import { TokenService } from "../services/storage.service";
 
 export default {
   components: {
@@ -30,7 +32,7 @@ export default {
     };
   },
   mounted() {
-    let token = localStorage.getItem("jwt");
+    let token = TokenService.getToken();
 
     if (token.length > 0) {
       this.$http
@@ -52,28 +54,27 @@ export default {
     getOptValue(value) {
       this.category = value;
     },
+
     getID() {
-      let id = document.querySelectorAll("#savings li");
-      id = id.length;
-      return id;
+      return Utils.listID();
     },
+
     capitalize(name) {
-      const nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
-      return nameCapitalized;
+      return Utils.capitalizeFirstLetter(name);
     },
+
     inputHandler(value) {
-      let regex = /^[0-9]{1,2}([,.][0-9]{1,2})?$/;
-      if (regex.test(value)) {
-        this.category = value;
-      }
+      this.category = Utils.onlyNumbersTest(value);
     },
-    handleLogout(e) {
+
+    async handleLogout(e) {
       e.preventDefault();
-      const logout = UserService.logout();
+      const logout = await UserService.logout();
       if (logout) {
         this.$router.push("/");
       }
     },
+
     async addSaving(e) {
       e.preventDefault();
 
@@ -83,7 +84,6 @@ export default {
           this.category = "";
           this.saving = "";
           this.getSavings();
-          console.log(response.config.data, response.data);
         } else {
           console.log(response);
         }
@@ -91,11 +91,11 @@ export default {
         console.log("Didn't fit regex.");
       }
     },
+
     async getSavings() {
       const response = await UserService.getSavings();
 
       if (response) {
-        console.log(response);
         let savings = response.data.savings;
         let ul = document.querySelector("#savings");
 

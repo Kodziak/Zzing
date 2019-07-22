@@ -48,6 +48,16 @@ const UserService = {
     }
   },
 
+  profile: async function() {
+    try {
+      const response = await ApiService.get("/profile");
+
+      return response;
+    } catch (error) {
+      return error;
+    }
+  },
+
   addSaving: async function(username, id, category, amount) {
     try {
       const response = await ApiService.post("/savings/add", {
