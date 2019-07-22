@@ -8,7 +8,13 @@
 
     <Button id="addSavingBtn" @click.native="addSaving">Add saving</Button>
     <Button id="logout" @click.native="handleLogout">Logout</Button>
-    <ul id="savings"></ul>
+
+    <table id="savings">
+      <tr>
+        <th>Category</th>
+        <th>Amount</th>
+      </tr>
+    </table>
   </div>
 </template>
 
@@ -27,8 +33,8 @@ export default {
   data() {
     return {
       username: "",
-      category: "",
-      saving: ""
+      saving: "",
+      category: ""
     };
   },
   mounted() {
@@ -64,7 +70,12 @@ export default {
     },
 
     inputHandler(value) {
-      this.category = Utils.onlyNumbersTest(value);
+      if (Utils.onlyNumbersTest(value)) {
+        this.saving = value;
+        return true;
+      } else {
+        return false;
+      }
     },
 
     async handleLogout(e) {
@@ -77,15 +88,15 @@ export default {
 
     async addSaving(e) {
       e.preventDefault();
-
-      if (this.saving.length > 0 && this.category.length > 0 && this.inputHandler(this.saving)) {
+      if (this.saving.length > 0 && this.category && this.inputHandler(this.saving)) {
         const response = await UserService.addSaving(this.username, this.getID(), this.category, this.saving);
         if (response) {
+          console.log(response);
           this.category = "";
           this.saving = "";
           this.getSavings();
         } else {
-          console.log(response);
+          console.log("error with response on addSaving");
         }
       } else {
         console.log("Didn't fit regex.");
@@ -94,19 +105,26 @@ export default {
 
     async getSavings() {
       const response = await UserService.getSavings();
+      let savings = await response.data.savings;
+
+      let savingsTable = document.querySelector("#savings");
+      let tableLenght = savingsTable.children.length;
+      while (tableLenght > 1) {
+        savingsTable.deleteRow(1);
+        tableLenght = savingsTable.children.length;
+        if (tableLenght === 1) {
+          break;
+        }
+      }
 
       if (response) {
-        let savings = response.data.savings;
-        let ul = document.querySelector("#savings");
-
-        while (ul.firstChild) {
-          ul.removeChild(ul.firstChild);
-        }
-
         savings.forEach(item => {
-          let li = document.createElement("li");
-          li.innerText = `Category: ${item.category}, Amount: ${item.amount}`;
-          ul.appendChild(li);
+          let row = savingsTable.insertRow(1);
+          let cell1 = row.insertCell(0);
+          let cell2 = row.insertCell(1);
+
+          cell1.innerHTML = `${item.category}`;
+          cell2.innerHTML = `${item.amount}`;
         });
       }
     }

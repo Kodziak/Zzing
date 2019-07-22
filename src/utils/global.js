@@ -1,4 +1,4 @@
-const REGEX_NUMBERS = /^[0-9]{1,2}([,.][0-9]{1,2})?$/;
+const REGEX_NUMBERS = /^[0-9]{1,99999999}([,.][0-9]{1,2})?$/;
 
 const Utils = {
   capitalizeFirstLetter: function(value) {
@@ -6,13 +6,15 @@ const Utils = {
   },
 
   listID: function() {
-    let id = document.querySelectorAll("#savings li");
-    return id.length;
+    let id = document.querySelectorAll("#savings tr");
+    return id.length - 1;
   },
 
   onlyNumbersTest: function(value) {
     if (REGEX_NUMBERS.test(value)) {
       return value;
+    } else {
+      return null;
     }
   }
 };
