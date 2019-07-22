@@ -68,7 +68,13 @@ const UserService = {
   },
 
   getSavings: async function() {
-    //TODO: Implement to get all savings
+    try {
+      const response = await ApiService.get("/savings");
+
+      return response;
+    } catch (error) {
+      return error;
+    }
   },
 
   removeSaving: async function() {

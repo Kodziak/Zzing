@@ -74,11 +74,11 @@ export default {
         this.$router.push("/");
       }
     },
-    addSaving(e) {
+    async addSaving(e) {
       e.preventDefault();
 
       if (this.saving.length > 0 && this.category.length > 0 && this.inputHandler(this.saving)) {
-        const response = UserService.addSaving(this.username, this.getID(), this.category, this.saving);
+        const response = await UserService.addSaving(this.username, this.getID(), this.category, this.saving);
         if (response) {
           this.category = "";
           this.saving = "";
@@ -91,31 +91,24 @@ export default {
         console.log("Didn't fit regex.");
       }
     },
-    getSavings() {
-      this.$http
-        .get("http://localhost:3000/savings", {
-          headers: {
-            Authorization: localStorage.getItem("jwt")
-          }
-        })
-        .then(response => {
-          let savings = response.data.savings;
-          let li = document.querySelector("#savings li");
-          let ul = document.querySelector("#savings");
+    async getSavings() {
+      const response = await UserService.getSavings();
 
-          while (ul.firstChild) {
-            ul.removeChild(ul.firstChild);
-          }
+      if (response) {
+        console.log(response);
+        let savings = response.data.savings;
+        let ul = document.querySelector("#savings");
 
-          savings.forEach(item => {
-            let li = document.createElement("li");
-            li.innerText = `Category: ${item.category}, Amount: ${item.amount}`;
-            ul.appendChild(li);
-          });
-        })
-        .catch(error => {
-          console.log(error);
+        while (ul.firstChild) {
+          ul.removeChild(ul.firstChild);
+        }
+
+        savings.forEach(item => {
+          let li = document.createElement("li");
+          li.innerText = `Category: ${item.category}, Amount: ${item.amount}`;
+          ul.appendChild(li);
         });
+      }
     }
   }
 };
